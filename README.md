@@ -66,80 +66,7 @@ VITE_DASHSCOPE_API_KEY=你的百炼API_Key
 ```bash
 npm run dev
 ```
-
 应用将在 `http://localhost:3000` 启动（端口可在 `vite.config.ts` 中修改）。
-
-## 📦 构建与部署
-
-### 构建生产版本
-
-```bash
-npm run build
-```
-
-构建产物将输出到 `dist` 目录。
-
-### 预览构建结果
-
-```bash
-npm run preview
-```
-
-### 部署到服务器
-
-#### 方式一：静态文件部署
-
-1. 执行 `npm run build` 生成 `dist` 目录
-2. 将 `dist` 目录内容上传到静态服务器（Nginx、Apache、Vercel、Netlify 等）
-3. 配置服务器支持 SPA 路由（所有路由指向 `index.html`）
-
-**Nginx 配置示例：**
-
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
-    root /path/to/dist;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-}
-```
-
-#### 方式二：Docker 部署
-
-创建 `Dockerfile`：
-
-```dockerfile
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
-FROM nginx:alpine
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-构建并运行：
-
-```bash
-docker build -t fengshui-app .
-docker run -p 80:80 fengshui-app
-```
-
-#### 方式三：Vercel / Netlify
-
-1. 将代码推送到 GitHub
-2. 在 Vercel/Netlify 中导入项目
-3. 配置环境变量 `VITE_DASHSCOPE_API_KEY`
-4. 部署完成
 
 ## 💻 打包成桌面应用
 
@@ -172,41 +99,6 @@ npm run electron:build:win
 - **安装版**：`ZenOffice AI 数字风水顾问 Setup 1.0.0.exe`（NSIS 安装程序）
 - **便携版**：`ZenOffice AI 数字风水顾问-1.0.0-便携版.exe`（无需安装，直接运行）
 
-#### macOS
-
-```bash
-# 打包 macOS 应用（.dmg）
-npm run electron:build:mac
-```
-
-#### Linux
-
-```bash
-# 打包 Linux 应用（AppImage / deb）
-npm run electron:build:linux
-```
-
-#### 仅打包不生成安装程序（测试用）
-
-```bash
-# 打包到 release 目录，不生成安装程序
-npm run electron:pack
-```
-
-### 打包配置
-
-打包配置在 `electron-builder.config.js` 中，可以自定义：
-- 应用图标
-- 安装程序样式
-- 输出格式
-- 压缩选项
-
-**注意**：
-- 首次打包会下载 Electron 二进制文件，可能需要一些时间
-- Windows 打包需要安装 [NSIS](https://nsis.sourceforge.io/Download)（可选，用于生成安装程序）
-- macOS 打包需要在 macOS 系统上进行
-- Linux 打包可以在任何系统上进行
-
 ### 环境变量处理
 
 打包后的应用需要用户手动配置 API Key。你可以：
@@ -214,32 +106,7 @@ npm run electron:pack
 1. **在应用内添加配置界面**：让用户输入 API Key
 2. **使用配置文件**：在应用目录创建 `config.json` 存储 API Key
 3. **使用系统环境变量**：读取系统环境变量（不推荐，安全性较低）
-
 **推荐方案**：在应用首次启动时提示用户输入 API Key，并保存到本地配置文件。
-
-## ⚙️ 配置说明
-
-### 环境变量
-
-| 变量名 | 说明 | 必需 |
-|--------|------|------|
-| `VITE_DASHSCOPE_API_KEY` | 阿里云百炼 API Key | ✅ |
-
-### 文件上传限制
-
-- **最大文件大小**：10MB
-- **支持格式**：图片（jpg, png, gif 等）、视频（mp4, mov 等）
-
-### 端口配置
-
-默认端口为 `3000`，可在 `vite.config.ts` 中修改：
-
-```typescript
-server: {
-  port: 3000,  // 修改为你想要的端口
-  host: '0.0.0.0',
-}
-```
 
 ## 🔧 开发说明
 
@@ -261,37 +128,11 @@ fengshui/
 └── tsconfig.json        # TypeScript 配置
 ```
 
-### 主要接口
-
-- `analyzeOfficeSpace(file: File, orientation: string)`: 分析办公空间，返回风水报告
-- `fileToGenerativePart(file: File)`: 将文件转换为 base64 格式
-
-## ⚠️ 注意事项
-
-1. **API 密钥安全**：
-   - ⚠️ **重要**：当前实现中 API Key 会暴露在前端代码中
-   - 仅适用于内部使用或受控环境
-   - 生产环境建议使用后端代理 API 调用
-
-2. **浏览器兼容性**：
-   - 支持现代浏览器（Chrome、Firefox、Safari、Edge 最新版本）
-   - 需要支持 ES6+ 和 FileReader API
-
-3. **API 配额**：
-   - 注意阿里云百炼的 API 调用配额和费用
-   - 建议设置合理的调用频率限制
-
-## 🐛 常见问题
-
-### Q: 提示 "API Key not found"
-**A:** 检查 `.env.local` 文件是否存在，且变量名为 `VITE_DASHSCOPE_API_KEY`（注意 `VITE_` 前缀）
-
-### Q: 上传文件后没有反应
-**A:** 
-- 检查浏览器控制台是否有错误
-- 确认 API Key 有效且有足够配额
-- 检查文件大小是否超过 10MB
-
-
-
 **提示**：使用本应用时，请确保遵守相关法律法规，风水分析仅供参考，不构成专业建议。
+##  使用说明
+### 上传工位照片
+<img width="340" height="724" alt="1" src="https://github.com/user-attachments/assets/37d7f135-c8e1-4a6f-b99c-3fe76b8acb8f" />
+### 获取结果
+<img width="320" height="751" alt="2" src="https://github.com/user-attachments/assets/7764001a-61d0-45f3-87bf-9c27da06ce73" />
+<img width="319" height="475" alt="3" src="https://github.com/user-attachments/assets/12053bf9-1cc7-48ec-a144-f9d6f360909f" />
+<img width="286" height="469" alt="4" src="https://github.com/user-attachments/assets/bb494150-309a-4d1e-a6f3-2c016db0c9f3" />
