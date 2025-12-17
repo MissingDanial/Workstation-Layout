@@ -132,7 +132,9 @@ fengshui/
 ##  使用说明
 ### 上传工位照片
 <img width="340" height="724" alt="1" src="https://github.com/user-attachments/assets/37d7f135-c8e1-4a6f-b99c-3fe76b8acb8f" />
+
 ### 获取结果
+包括气场分析、每日风水SOP、能量地图分析
 <img width="320" height="751" alt="2" src="https://github.com/user-attachments/assets/7764001a-61d0-45f3-87bf-9c27da06ce73" />
 <img width="319" height="475" alt="3" src="https://github.com/user-attachments/assets/12053bf9-1cc7-48ec-a144-f9d6f360909f" />
 <img width="286" height="469" alt="4" src="https://github.com/user-attachments/assets/bb494150-309a-4d1e-a6f3-2c016db0c9f3" />
